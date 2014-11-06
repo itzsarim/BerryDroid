@@ -37,12 +37,24 @@ var app = {
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
+    
+    	console.log("in receivedEvent");
         var parentElement = document.getElementById(id);
         var listeningElement = parentElement.querySelector('.listening');
         var receivedElement = parentElement.querySelector('.received');
 
         listeningElement.setAttribute('style', 'display:none;');
         receivedElement.setAttribute('style', 'display:block;');
+        
+        $('#listnamesubmit').click(listnamesubmitted());
+        
+        function listnamesubmitted(){
+        var listname = $('#listname').val;
+        console.log('listaname',listname);
+        }
+        
+        
+        
 
         console.log('Received Event: ' + id);
     }

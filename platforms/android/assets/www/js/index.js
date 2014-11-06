@@ -34,15 +34,73 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
+        
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
-
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
+    
+    $( document ).on( "pagecreate", "#alists", function( event ) {
+    console.log( "This page was just enhanced by jQuery Mobile!" );
+	});
+    	console.log("in receivedEvent");
+        
+        var inthislist = null;
+        
+        var newListName = null;
+        
+        
+        
+        db.transaction(queryDB,errorCB);
+        
+        function queryDB(tx){
+        tx.executeSql("SELECT name FROM sqlite_master WHERE type='table'",[],querySuccess,errorCB);
+        }
+        function querySuccess(tx,result){
+        var len = result.rows.length;
+		$('#listing').empty();
+		    for(var i=1;i<len;i++){
+                
+                $('#listing').append('<li id="items"><a href="#listitems"><h3 class="ui-li-heading">'+result.rows.item(i).name+'</h3></a></li>');
+      
+            } 
+		      
+		 
+		        $('#listing').listview();
+        }
+        function errorCB(err){
+        	$('#listing').append('<li id="items"><a href="#"><h3 class="ui-li-heading">'+err+'</h3></a></li>');
+        }
+        
+        
+        $('#listnamesubmit').click(function(){
+        newListName = $('#listname').val();
+        console.log('listname',newListName);
+        table_list = newListName;
+        inthislist=newListName;
+        createTable(table_list,listFields,{"id":"primary key","item":"not null","list":"not null","bought":"not null"});
+        $("#namehead").append(inthislist);
+        });
+        
+        $('#itemadd').click(function(){
+        var itemadded = $('.itemname').val();
+        $('#itemslisting').append('<div class="item">' +itemID+'.'+itemadded + '</div>' );
+        $('.itemname').val("");
+        createPara(itemID,itemadded,newListName);
+        itemID+=1;
+        insertTable(table_list,listFields,insertP);
+        });
+        
+        $('#listing').live(function(){
+        console.log('yo');
+        inthislist = $(this).html();
+        console.log(inthislist);
+        });
+        
+        
+        
+        
+        
+        
 
         console.log('Received Event: ' + id);
     }
